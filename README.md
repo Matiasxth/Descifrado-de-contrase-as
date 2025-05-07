@@ -28,6 +28,8 @@ Este proyecto es una aplicación web simple creada con **Streamlit** que permite
 🔐 Seguridad
 No se guarda nada en servidores. Todo se cifra/descifra localmente en el navegador o backend.
 
+https://descifrado-de-contrase-as-kpj88bmji7p7cwrt6uhtzn.streamlit.app/
+
 La clave secreta es obligatoria para descifrar. Si la pierdes, no podrás recuperar tu contraseña.
 
 El archivo cifrado no contiene la clave secreta, solo el contenido cifrado.
