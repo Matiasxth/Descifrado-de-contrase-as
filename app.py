@@ -34,22 +34,25 @@ if modo == "Cifrar contraseña":
 elif modo == "Descifrar contraseña":
     st.subheader("🔓 Recuperar contraseña")
 
-    # Clave y archivo se guardan en el estado de sesión para evitar pérdida al presionar el botón
-    if "clave" not in st.session_state:
-        st.session_state.clave = ""
+    # Ingreso de clave secreta
+    clave_ingresada = st.text_input("Ingresa la clave secreta", type="password")
 
-    clave_ingresada = st.text_input("Ingresa la clave secreta", type="password", key="clave")
-    archivo_subido = st.file_uploader("Sube el archivo cifrado (.txt)", type=["txt"], key="archivo")
+    # Subida de archivo
+    archivo_subido = st.file_uploader("Sube el archivo cifrado (.txt)", type=["txt"])
 
+    # Guardar archivo en session_state si se sube
+    if archivo_subido is not None:
+        st.session_state['datos_cifrados'] = archivo_subido.read()
+
+    # Botón para descifrar
     if st.button("🔍 Descifrar"):
-        if clave_ingresada and archivo_subido:
+        if clave_ingresada and 'datos_cifrados' in st.session_state:
             try:
                 cipher = Fernet(clave_ingresada.encode())
-                datos = archivo_subido.read()
-                texto_descifrado = cipher.decrypt(datos).decode()
+                texto_descifrado = cipher.decrypt(st.session_state['datos_cifrados']).decode()
                 st.success("✅ Contraseña recuperada:")
                 st.code(texto_descifrado, language="text")
-            except Exception as e:
+            except Exception:
                 st.error("❌ Error: Clave incorrecta o archivo inválido.")
         else:
             st.warning("⚠️ Debes ingresar la clave y subir el archivo cifrado.")
