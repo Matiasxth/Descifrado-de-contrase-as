@@ -25,6 +25,13 @@ Este proyecto es una aplicación web simple creada con **Streamlit** que permite
 3. Haz clic en **“Descifrar”**.
 4. Si todo coincide, se mostrará la contraseña original.
 
+🔐 Seguridad
+No se guarda nada en servidores. Todo se cifra/descifra localmente en el navegador o backend.
+
+La clave secreta es obligatoria para descifrar. Si la pierdes, no podrás recuperar tu contraseña.
+
+El archivo cifrado no contiene la clave secreta, solo el contenido cifrado.
+
 ---
 
 ## ⚙️ Requisitos
@@ -33,10 +40,3 @@ Instala las dependencias con:
 
 ```bash
 pip install -r requirements.txt
-
-🔐 Seguridad
-No se guarda nada en servidores. Todo se cifra/descifra localmente en el navegador o backend.
-
-La clave secreta es obligatoria para descifrar. Si la pierdes, no podrás recuperar tu contraseña.
-
-El archivo cifrado no contiene la clave secreta, solo el contenido cifrado.
