@@ -33,3 +33,10 @@ Instala las dependencias con:
 
 ```bash
 pip install -r requirements.txt
+
+🔐 Seguridad
+No se guarda nada en servidores. Todo se cifra/descifra localmente en el navegador o backend.
+
+La clave secreta es obligatoria para descifrar. Si la pierdes, no podrás recuperar tu contraseña.
+
+El archivo cifrado no contiene la clave secreta, solo el contenido cifrado.
