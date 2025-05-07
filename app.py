@@ -34,12 +34,15 @@ elif modo == "Descifrar contraseña":
     clave_ingresada = st.text_input("Ingresa la clave secreta", type="password")
     archivo_subido = st.file_uploader("Sube el archivo cifrado (.txt)", type=["txt"])
 
-    if clave_ingresada and archivo_subido:
-        try:
-            cipher = Fernet(clave_ingresada.encode())
-            datos = archivo_subido.read()
-            texto_descifrado = cipher.decrypt(datos).decode()
-            st.success("✅ Contraseña recuperada:")
-            st.code(texto_descifrado, language="text")
-        except Exception as e:
-            st.error("❌ Error: Clave incorrecta o archivo inválido.")
+    if st.button("🔍 Descifrar"):
+        if clave_ingresada and archivo_subido:
+            try:
+                cipher = Fernet(clave_ingresada.encode())
+                datos = archivo_subido.read()
+                texto_descifrado = cipher.decrypt(datos).decode()
+                st.success("✅ Contraseña recuperada:")
+                st.code(texto_descifrado, language="text")
+            except Exception as e:
+                st.error("❌ Error: Clave incorrecta o archivo inválido.")
+        else:
+            st.warning("⚠️ Debes ingresar la clave y subir el archivo cifrado.")
