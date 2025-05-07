@@ -4,9 +4,10 @@ from cryptography.fernet import Fernet
 st.set_page_config(page_title="Gestor de Contraseñas", layout="centered")
 st.title("🔐 Gestor de Contraseñas con Cifrado")
 
-# Opción del usuario
+# --- Elegir modo ---
 modo = st.radio("¿Qué deseas hacer?", ("Cifrar contraseña", "Descifrar contraseña"))
 
+# === CIFRAR CONTRASEÑA ===
 if modo == "Cifrar contraseña":
     st.subheader("🔏 Ingresar contraseña para cifrar")
     texto = st.text_input("Escribe la contraseña que deseas guardar", type="password")
@@ -29,10 +30,16 @@ if modo == "Cifrar contraseña":
         else:
             st.warning("⚠️ Debes ingresar una contraseña primero.")
 
+# === DESCIFRAR CONTRASEÑA ===
 elif modo == "Descifrar contraseña":
     st.subheader("🔓 Recuperar contraseña")
-    clave_ingresada = st.text_input("Ingresa la clave secreta", type="password")
-    archivo_subido = st.file_uploader("Sube el archivo cifrado (.txt)", type=["txt"])
+
+    # Clave y archivo se guardan en el estado de sesión para evitar pérdida al presionar el botón
+    if "clave" not in st.session_state:
+        st.session_state.clave = ""
+
+    clave_ingresada = st.text_input("Ingresa la clave secreta", type="password", key="clave")
+    archivo_subido = st.file_uploader("Sube el archivo cifrado (.txt)", type=["txt"], key="archivo")
 
     if st.button("🔍 Descifrar"):
         if clave_ingresada and archivo_subido:
@@ -46,3 +53,4 @@ elif modo == "Descifrar contraseña":
                 st.error("❌ Error: Clave incorrecta o archivo inválido.")
         else:
             st.warning("⚠️ Debes ingresar la clave y subir el archivo cifrado.")
+
