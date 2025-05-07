@@ -1,10 +1,10 @@
 import streamlit as st
 from cryptography.fernet import Fernet
+from io import BytesIO
 
 st.set_page_config(page_title="Gestor de Contraseñas", layout="centered")
 st.title("🔐 Gestor de Contraseñas con Cifrado")
 
-# --- Elegir modo ---
 modo = st.radio("¿Qué deseas hacer?", ("Cifrar contraseña", "Descifrar contraseña"))
 
 # === CIFRAR CONTRASEÑA ===
@@ -18,15 +18,20 @@ if modo == "Cifrar contraseña":
             cipher = Fernet(clave)
             texto_cifrado = cipher.encrypt(texto.encode())
 
-            # Guardar archivo cifrado
-            with open("clave_cifrada.txt", "wb") as f:
-                f.write(texto_cifrado)
+            # Crear archivo en memoria
+            buffer = BytesIO()
+            buffer.write(texto_cifrado)
+            buffer.seek(0)
 
-            st.success("✅ Contraseña cifrada y archivo generado.")
-            st.download_button("⬇️ Descargar archivo cifrado", data=texto_cifrado, file_name="clave_cifrada.txt")
+            st.success("✅ Contraseña cifrada correctamente.")
+            st.download_button(
+                label="⬇️ Descargar archivo cifrado",
+                data=buffer,
+                file_name="clave_cifrada.txt",
+                mime="text/plain"
+            )
             st.code(clave.decode(), language="text")
-            st.info("⚠️ Guarda esta clave secreta. La necesitarás para descifrar.")
-
+            st.info("⚠️ Guarda esta clave secreta. Es obligatoria para descifrar.")
         else:
             st.warning("⚠️ Debes ingresar una contraseña primero.")
 
@@ -34,26 +39,18 @@ if modo == "Cifrar contraseña":
 elif modo == "Descifrar contraseña":
     st.subheader("🔓 Recuperar contraseña")
 
-    # Ingreso de clave secreta
     clave_ingresada = st.text_input("Ingresa la clave secreta", type="password")
-
-    # Subida de archivo
     archivo_subido = st.file_uploader("Sube el archivo cifrado (.txt)", type=["txt"])
 
-    # Guardar archivo en session_state si se sube
-    if archivo_subido is not None:
-        st.session_state['datos_cifrados'] = archivo_subido.read()
-
-    # Botón para descifrar
     if st.button("🔍 Descifrar"):
-        if clave_ingresada and 'datos_cifrados' in st.session_state:
+        if clave_ingresada and archivo_subido is not None:
             try:
+                datos_cifrados = archivo_subido.read()
                 cipher = Fernet(clave_ingresada.encode())
-                texto_descifrado = cipher.decrypt(st.session_state['datos_cifrados']).decode()
+                texto_descifrado = cipher.decrypt(datos_cifrados).decode()
                 st.success("✅ Contraseña recuperada:")
                 st.code(texto_descifrado, language="text")
-            except Exception:
+            except Exception as e:
                 st.error("❌ Error: Clave incorrecta o archivo inválido.")
         else:
             st.warning("⚠️ Debes ingresar la clave y subir el archivo cifrado.")
-
